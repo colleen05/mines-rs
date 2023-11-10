@@ -6,6 +6,7 @@ struct GameTextures {
     top_cells: Texture2D,
     status_bar: Texture2D,
 }
+
 struct GameSounds {
     explode: Sound,
     win: Sound,
@@ -14,6 +15,7 @@ struct GameSounds {
 struct GameAssets {
     icon: Image,
     textures: GameTextures,
+    sounds: GameSounds,
 }
 
 struct Game {
@@ -57,6 +59,12 @@ impl Game {
                 status_bar: rl
                     .load_texture(&thread, "./resources/textures/statusbar.png")
                     .expect("Could not load texture."),
+            },
+            sounds: GameSounds {
+                explode: Sound::load_sound("./resources/sounds/explode.ogg")
+                    .expect("Could not load sound."),
+                win: Sound::load_sound("./resources/sounds/win.ogg")
+                    .expect("Could not load sound."),
             },
         };
         Game { rl, thread, assets }
