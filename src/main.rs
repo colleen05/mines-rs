@@ -1,4 +1,4 @@
-use raylib::prelude::*;
+use macroquad::{audio::*, miniquad::window::set_window_size, prelude::*};
 
 struct GameTextures {
     menu_background: Texture2D,
@@ -19,64 +19,55 @@ struct GameAssets {
 }
 
 struct Game {
-    rl: RaylibHandle,
-    thread: RaylibThread,
-    audio: RaylibAudio,
     assets: GameAssets,
 }
 
 impl Game {
-    fn draw(&mut self) {
-        let mut d = self.rl.begin_drawing(&self.thread);
-        d.clear_background(Color::WHITE);
-        d.draw_texture(&self.assets.textures.menu_background, 0, 0, Color::WHITE)
+    fn draw(&mut self) {}
+
+    fn update(&mut self) {
+        draw_texture(&self.assets.textures.menu_background, 0.0, 0.0, WHITE);
     }
 
-    fn update(&mut self) {}
-
-    fn start(&mut self) {
-        self.rl.set_window_icon(&self.assets.icon);
-
-        while !self.rl.window_should_close() {
+    async fn start(&mut self) {
+        loop {
             self.update();
             self.draw();
+
+            next_frame().await
         }
     }
 
-    fn new(title: &str, width: i32, height: i32) -> Game {
-        let (mut rl, thread) = raylib::init().size(width, height).title(title).build();
-        let audio = RaylibAudio::init_audio_device();
+    async fn new(width: u32, height: u32) -> Game {
+        set_window_size(width, height);
+
         let assets = GameAssets {
-            icon: Image::load_image("./resources/icon.png").expect("Could not load image."),
+            icon: load_image("./resources/icon.png").await.unwrap(),
             textures: GameTextures {
-                menu_background: rl
-                    .load_texture(&thread, "./resources/textures/splash.png")
+                menu_background: load_texture("./resources/textures/splash.png")
+                    .await
                     .unwrap(),
-                field_cells: rl
-                    .load_texture(&thread, "./resources/textures/fieldcells.png")
+                field_cells: load_texture("./resources/textures/fieldcells.png")
+                    .await
                     .unwrap(),
-                top_cells: rl
-                    .load_texture(&thread, "./resources/textures/topcells.png")
+                top_cells: load_texture("./resources/textures/topcells.png")
+                    .await
                     .unwrap(),
-                status_bar: rl
-                    .load_texture(&thread, "./resources/textures/statusbar.png")
+                status_bar: load_texture("./resources/textures/statusbar.png")
+                    .await
                     .unwrap(),
             },
             sounds: GameSounds {
-                explode: Sound::load_sound("./resources/sounds/explode.ogg").unwrap(),
-                win: Sound::load_sound("./resources/sounds/win.ogg").unwrap(),
+                explode: load_sound("./resources/sounds/explode.ogg").await.unwrap(),
+                win: load_sound("./resources/sounds/win.ogg").await.unwrap(),
             },
         };
 
-        Game {
-            rl,
-            thread,
-            audio,
-            assets,
-        }
+        Game { assets }
     }
 }
 
-fn main() {
-    Game::new("Mines", 800, 600).start();
+#[macroquad::main("Mines")]
+async fn main() {
+    Game::new(800, 600).await.start().await
 }
