@@ -49,22 +49,20 @@ impl Game {
             textures: GameTextures {
                 menu_background: rl
                     .load_texture(&thread, "./resources/textures/splash.png")
-                    .expect("Could not load texture."),
+                    .unwrap(),
                 field_cells: rl
                     .load_texture(&thread, "./resources/textures/fieldcells.png")
-                    .expect("Could not load texture."),
+                    .unwrap(),
                 top_cells: rl
                     .load_texture(&thread, "./resources/textures/topcells.png")
-                    .expect("Could not load texture."),
+                    .unwrap(),
                 status_bar: rl
                     .load_texture(&thread, "./resources/textures/statusbar.png")
-                    .expect("Could not load texture."),
+                    .unwrap(),
             },
             sounds: GameSounds {
-                explode: Sound::load_sound("./resources/sounds/explode.ogg")
-                    .expect("Could not load sound."),
-                win: Sound::load_sound("./resources/sounds/win.ogg")
-                    .expect("Could not load sound."),
+                explode: Sound::load_sound("./resources/sounds/explode.ogg").unwrap(),
+                win: Sound::load_sound("./resources/sounds/win.ogg").unwrap(),
             },
         };
         Game { rl, thread, assets }
