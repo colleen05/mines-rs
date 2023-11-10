@@ -21,6 +21,7 @@ struct GameAssets {
 struct Game {
     rl: RaylibHandle,
     thread: RaylibThread,
+    audio: RaylibAudio,
     assets: GameAssets,
 }
 
@@ -44,6 +45,7 @@ impl Game {
 
     fn new(title: &str, width: i32, height: i32) -> Game {
         let (mut rl, thread) = raylib::init().size(width, height).title(title).build();
+        let audio = RaylibAudio::init_audio_device();
         let assets = GameAssets {
             icon: Image::load_image("./resources/icon.png").expect("Could not load image."),
             textures: GameTextures {
@@ -65,7 +67,13 @@ impl Game {
                 win: Sound::load_sound("./resources/sounds/win.ogg").unwrap(),
             },
         };
-        Game { rl, thread, assets }
+
+        Game {
+            rl,
+            thread,
+            audio,
+            assets,
+        }
     }
 }
 
