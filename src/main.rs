@@ -205,6 +205,19 @@ impl StatusSegment {
     }
 }
 
+fn draw_texture_rec(texture: &Texture2D, position: Vec2, rect: Rect, color: Color) {
+    draw_texture_ex(
+        texture,
+        position.x,
+        position.y,
+        color,
+        DrawTextureParams {
+            dest_size: Some(vec2(rect.w, rect.h)),
+            source: Some(rect),
+            ..Default::default()
+        },
+    );
+}
 struct Game {
     assets: GameAssets,
     state: GameState,
@@ -426,7 +439,37 @@ impl Game {
 
         /* Draw status bar */
         {
-            // draw_texture
+            // Status face
+            draw_texture_rec(
+                &self.assets.textures.status_bar,
+                Vec2 {
+                    x: screen_width() / 2.0 - 126.0,
+                    y: 12.0,
+                },
+                self.status_face.get_texture_rect(),
+                WHITE,
+            );
+
+            // Mines counter - Icon
+            draw_texture_rec(
+                &self.assets.textures.status_bar,
+                Vec2 { x: 32.0, y: 36.0 },
+                StatusSegment::Mine.get_texture_rect(),
+                WHITE,
+            );
+
+            // Mines counter - zeros
+            for i in 0..3 {
+                draw_texture_rec(
+                    &self.assets.textures.status_bar,
+                    Vec2 {
+                        x: 64.0 + 32.0 * (i as f32),
+                        y: 36.0,
+                    },
+                    StatusSegment::Blank.get_texture_rect(),
+                    WHITE,
+                )
+            }
         }
     }
 
