@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-macroquad="0.4"
+macroquad={version = "0.4", default-features=true, features=["audio"]}
 
 [build-dependencies]
 copy_to_output="2.1.0"
