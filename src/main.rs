@@ -1,6 +1,10 @@
+use ext_gfx::drawing::*;
+use ext_gfx::gui::*;
+use macroquad::{audio::*, miniquad::window::*, prelude::*, rand::*};
 use std::cmp;
 
-use macroquad::{audio::*, miniquad::window::*, prelude::*, rand::*, Error};
+pub mod ext_gfx;
+pub mod screens;
 
 struct GameTextures {
     menu_background: Texture2D,
@@ -205,21 +209,9 @@ impl StatusSegment {
     }
 }
 
-fn draw_texture_rec(texture: &Texture2D, position: Vec2, rect: Rect, color: Color) {
-    draw_texture_ex(
-        texture,
-        position.x,
-        position.y,
-        color,
-        DrawTextureParams {
-            dest_size: Some(vec2(rect.w, rect.h)),
-            source: Some(rect),
-            ..Default::default()
-        },
-    );
-}
 struct Game {
     assets: GameAssets,
+    gui: GUI,
     state: GameState,
     field_width: i32,
     field_height: i32,
@@ -351,128 +343,6 @@ impl Game {
         }
     }
 
-    fn do_titlemenu(&mut self) {
-        // Set window size
-        set_window_size(800, 600);
-
-        // Reset state
-        self.do_timer = false;
-        self.round_timer = 0;
-        self.round_start = 0;
-        self.game_won = false;
-        self.game_over = false;
-        self.status_face = StatusFace::Happy;
-
-        // Draw background
-        draw_texture(&self.assets.textures.menu_background, 0.0, 0.0, WHITE);
-
-        // Preset buttons
-        if is_key_pressed(KeyCode::Enter) {
-            self.gen_field(25, 15, 50);
-
-            self.round_start = get_time() as i32;
-            self.clicked_cells = 0;
-            self.state = GameState::InRound;
-        }
-    }
-
-    fn do_minefield(&mut self) {
-        if is_key_pressed(KeyCode::Escape) {
-            self.state = GameState::InMenu;
-        }
-        /* Draw panels */
-        {
-            draw_rectangle(
-                // Solid BG - Top
-                0.0,
-                0.0,
-                screen_width(),
-                120.0,
-                color_u8!(0xff, 0xff, 0xff, 0xff),
-            );
-            draw_rectangle_lines(
-                // Border - Top, Outside
-                0.0,
-                0.0,
-                screen_width(),
-                120.0,
-                2.0,
-                color_u8!(0x55, 0x55, 0x55, 0xff),
-            );
-            draw_rectangle_lines(
-                // Border - Top, Inside
-                1.0,
-                1.0,
-                screen_width() - 2.0,
-                118.0,
-                2.0,
-                color_u8!(0xaa, 0xaa, 0xaa, 0xff),
-            );
-
-            draw_rectangle(
-                // Solid BG - Bottom
-                0.0,
-                120.0,
-                800.0,
-                480.0,
-                color_u8!(0xaa, 0xaa, 0xaa, 0xff),
-            );
-            draw_rectangle_lines(
-                // Border - Bottom, Outside
-                0.0,
-                120.0,
-                800.0,
-                480.0,
-                2.0,
-                color_u8!(0x75, 0x75, 0x75, 0xff),
-            );
-            draw_rectangle_lines(
-                // Border - Bottom, Inside
-                1.0,
-                121.0,
-                798.0,
-                478.0,
-                2.0,
-                color_u8!(0x8a, 0x8a, 0x8a, 0xff),
-            );
-        }
-
-        /* Draw status bar */
-        {
-            // Status face
-            draw_texture_rec(
-                &self.assets.textures.status_bar,
-                Vec2 {
-                    x: screen_width() / 2.0 - 126.0,
-                    y: 12.0,
-                },
-                self.status_face.get_texture_rect(),
-                WHITE,
-            );
-
-            // Mines counter - Icon
-            draw_texture_rec(
-                &self.assets.textures.status_bar,
-                Vec2 { x: 32.0, y: 36.0 },
-                StatusSegment::Mine.get_texture_rect(),
-                WHITE,
-            );
-
-            // Mines counter - zeros
-            for i in 0..3 {
-                draw_texture_rec(
-                    &self.assets.textures.status_bar,
-                    Vec2 {
-                        x: 64.0 + 32.0 * (i as f32),
-                        y: 36.0,
-                    },
-                    StatusSegment::Blank.get_texture_rect(),
-                    WHITE,
-                )
-            }
-        }
-    }
-
     async fn new(width: u32, height: u32) -> Game {
         set_window_size(width, height);
 
@@ -500,6 +370,7 @@ impl Game {
 
         let mut game = Game {
             assets,
+            gui: GUI::new().await,
             state: GameState::InMenu,
             field_width: 1,
             field_height: 1,
