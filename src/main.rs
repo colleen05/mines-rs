@@ -125,6 +125,22 @@ enum StatusSegment {
 }
 
 impl StatusSegment {
+    fn try_from(v: i32) -> Result<Self, String> {
+        match v + 1 {
+            x if x == StatusSegment::Zero as i32 => Ok(StatusSegment::Zero),
+            x if x == StatusSegment::One as i32 => Ok(StatusSegment::One),
+            x if x == StatusSegment::Two as i32 => Ok(StatusSegment::Two),
+            x if x == StatusSegment::Three as i32 => Ok(StatusSegment::Three),
+            x if x == StatusSegment::Four as i32 => Ok(StatusSegment::Four),
+            x if x == StatusSegment::Five as i32 => Ok(StatusSegment::Five),
+            x if x == StatusSegment::Six as i32 => Ok(StatusSegment::Six),
+            x if x == StatusSegment::Seven as i32 => Ok(StatusSegment::Seven),
+            x if x == StatusSegment::Eight as i32 => Ok(StatusSegment::Eight),
+            x if x == StatusSegment::Nine as i32 => Ok(StatusSegment::Nine),
+            _ => Err(format!("Number outside range of enum ({v}).")),
+        }
+    }
+
     fn get_texture_rect(&self) -> Rect {
         match *self {
             StatusSegment::Blank => Rect {

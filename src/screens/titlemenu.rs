@@ -28,7 +28,7 @@ impl Game {
         ];
 
         for (i, preset) in PRESETS.iter().enumerate() {
-            let x: f32 = 64.0;
+            let x: f32 = 96.0;
             let y: f32 = 284.0 + 48.0 * (i as f32);
             let w: f32 = 144.0;
             let h: f32 = 32.0;

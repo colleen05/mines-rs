@@ -74,6 +74,12 @@ impl GUI {
         clicked
     }
 
+    pub fn spinner(x: f32, y: f32, value: i32, min: i32, max: i32) -> i32 {
+        let v = value;
+
+        v
+    }
+
     pub async fn new() -> GUI {
         GUI {
             textures: GUITextures {
