@@ -20,6 +20,7 @@ struct GameSounds {
 
 struct GameAssets {
     icon: Image,
+    theme_name: String,
     textures: GameTextures,
     sounds: GameSounds,
 }
@@ -257,6 +258,12 @@ impl Game {
                 GameState::InRound => self.do_minefield(),
             }
 
+            if is_key_pressed(KeyCode::Q) {
+                self.load_theme("classic").await;
+            } else if is_key_pressed(KeyCode::W) {
+                self.load_theme("marble").await;
+            }
+
             next_frame().await
         }
     }
@@ -359,34 +366,72 @@ impl Game {
         }
     }
 
+    async fn load_theme(&mut self, name: &str) {
+        let resource_path = format!("./resources/themes/{name}");
+
+        let textures = GameTextures {
+            menu_background: load_texture(format!("{resource_path}/textures/splash.png").as_str())
+                .await
+                .unwrap(),
+            field_cells: load_texture(format!("{resource_path}/textures/fieldcells.png").as_str())
+                .await
+                .unwrap(),
+            top_cells: load_texture(format!("{resource_path}/textures/topcells.png").as_str())
+                .await
+                .unwrap(),
+            status_bar: load_texture(format!("{resource_path}/textures/statusbar.png").as_str())
+                .await
+                .unwrap(),
+        };
+
+        let sounds = GameSounds {
+            explode: load_sound(format!("{resource_path}/sounds/explode.ogg").as_str())
+                .await
+                .unwrap(),
+            win: load_sound(format!("{resource_path}/sounds/win.ogg").as_str())
+                .await
+                .unwrap(),
+        };
+
+        self.assets.textures = textures;
+        self.assets.sounds = sounds;
+
+        self.gui = GUI::new(name).await;
+    }
+
     async fn new(width: u32, height: u32) -> Game {
         set_window_size(width, height);
 
         let assets = GameAssets {
             icon: load_image("./resources/icon.png").await.unwrap(),
+            theme_name: String::from("classic"),
             textures: GameTextures {
-                menu_background: load_texture("./resources/textures/splash.png")
+                menu_background: load_texture("./resources/themes/classic/textures/splash.png")
                     .await
                     .unwrap(),
-                field_cells: load_texture("./resources/textures/fieldcells.png")
+                field_cells: load_texture("./resources/themes/classic/textures/fieldcells.png")
                     .await
                     .unwrap(),
-                top_cells: load_texture("./resources/textures/topcells.png")
+                top_cells: load_texture("./resources/themes/classic/textures/topcells.png")
                     .await
                     .unwrap(),
-                status_bar: load_texture("./resources/textures/statusbar.png")
+                status_bar: load_texture("./resources/themes/classic/textures/statusbar.png")
                     .await
                     .unwrap(),
             },
             sounds: GameSounds {
-                explode: load_sound("./resources/sounds/explode.ogg").await.unwrap(),
-                win: load_sound("./resources/sounds/win.ogg").await.unwrap(),
+                explode: load_sound("./resources/themes/classic/sounds/explode.ogg")
+                    .await
+                    .unwrap(),
+                win: load_sound("./resources/themes/classic/sounds/win.ogg")
+                    .await
+                    .unwrap(),
             },
         };
 
         let mut game = Game {
             assets,
-            gui: GUI::new().await,
+            gui: GUI::new("classic").await,
             state: GameState::InMenu,
             field_width: 1,
             field_height: 1,
@@ -404,6 +449,7 @@ impl Game {
             cover: vec![CoverCell::Blank; 1],
         };
 
+        game.load_theme("classic").await;
         game.gen_field(25, 15, 50);
 
         game

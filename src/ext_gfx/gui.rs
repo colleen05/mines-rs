@@ -92,15 +92,21 @@ impl GUI {
         value
     }
 
-    pub async fn new() -> GUI {
+    pub async fn new(theme_name: &str) -> GUI {
+        let resource_path = format!("./resources/themes/{theme_name}");
+
         GUI {
             textures: GUITextures {
-                arrow_up: load_texture("./resources/textures/ui_arrow_up.png")
-                    .await
-                    .unwrap(),
-                arrow_down: load_texture("./resources/textures/ui_arrow_down.png")
-                    .await
-                    .unwrap(),
+                arrow_up: load_texture(
+                    format!("{resource_path}/textures/ui_arrow_up.png").as_str(),
+                )
+                .await
+                .unwrap(),
+                arrow_down: load_texture(
+                    format!("{resource_path}/textures/ui_arrow_down.png").as_str(),
+                )
+                .await
+                .unwrap(),
             },
         }
     }

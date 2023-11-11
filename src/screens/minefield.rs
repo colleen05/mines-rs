@@ -282,7 +282,7 @@ impl Game {
                 // Otherwise, if the cell has never been clicked before...
                 else if matches!(self.cover[selection_pos], CoverCell::Blank) {
                     // Generate new fields until the place they clicked contains no mines.
-                    while matches!(self.field[selection_pos], FieldCell::Mine)
+                    while !matches!(self.field[selection_pos], FieldCell::Empty)
                         && (self.clicked_cells == 0)
                     {
                         self.gen_field(self.field_width, self.field_height, self.field_mines);
