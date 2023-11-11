@@ -74,10 +74,22 @@ impl GUI {
         clicked
     }
 
-    pub fn spinner(x: f32, y: f32, value: i32, min: i32, max: i32) -> i32 {
-        let v = value;
+    pub fn spinner(&self, x: f32, y: f32, mut value: i32, min: i32, max: i32) -> i32 {
+        // Define bounds
+        let bounds = Rect::new(x, y, 64.0, 32.0);
 
-        v
+        draw_rectangle(x, y, 64.0, 32.0, DARKGRAY);
+        draw_text(value.to_string().as_str(), x, y, 32.0, BLACK);
+
+        if self.button(Rect::new(x, y, 22.0, 16.0), "") {
+            value += 1;
+        }
+
+        if self.button(Rect::new(x, y + 16.0, 22.0, 16.0), "") {
+            value -= 1;
+        }
+
+        value
     }
 
     pub async fn new() -> GUI {

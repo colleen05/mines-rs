@@ -49,6 +49,27 @@ impl Game {
         }
 
         // Custom selection
+        let maxmines = clamp(self.field_width * self.field_height - 1, 1, 199);
+
+        self.field_width = self.gui.spinner(544.0, 284.0, self.field_width, 5, 50);
+        self.field_height = self.gui.spinner(640.0, 284.0, self.field_height, 5, 50);
+        self.field_mines = self
+            .gui
+            .spinner(640.0, 332.0, self.field_mines, 1, maxmines);
+
+        if self.gui.button(
+            Rect {
+                x: 496.0,
+                y: 380.0,
+                w: 208.0,
+                h: 32.0,
+            },
+            "CUSTOM",
+        ) {
+            selected = true;
+            sel_size = (self.field_width, self.field_height);
+            sel_mines = self.field_mines;
+        }
 
         // Handle selection
         if selected {
