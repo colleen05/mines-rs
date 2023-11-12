@@ -76,20 +76,69 @@ impl GUI {
 
     pub fn spinner(&self, x: f32, y: f32, mut value: i32, min: i32, max: i32) -> i32 {
         // Define bounds
-        let bounds = Rect::new(x, y, 64.0, 32.0);
+        let bounds = Rect::new(x, y, 68.0, 32.0);
 
-        draw_rectangle(x, y, 64.0, 32.0, DARKGRAY);
-        draw_text(value.to_string().as_str(), x, y, 32.0, BLACK);
+        // Draw base
+        draw_rectangle(
+            bounds.x,
+            bounds.y,
+            bounds.w,
+            bounds.h,
+            color_u8!(0x45, 0x45, 0x45, 0xff),
+        );
 
-        if self.button(Rect::new(x, y, 22.0, 16.0), "") {
+        draw_rectangle(
+            bounds.x + 1.0,
+            bounds.y + 1.0,
+            bounds.w - 21.0 - 2.0,
+            bounds.h - 2.0,
+            color_u8!(0x9a, 0x9a, 0x9a, 0xff),
+        );
+
+        draw_rectangle(
+            bounds.x + 2.0,
+            bounds.y + 2.0,
+            bounds.w - 21.0 - 4.0,
+            bounds.h - 4.0,
+            color_u8!(0xdf, 0xdf, 0xdf, 0xff),
+        );
+
+        let text_size = measure_text(value.to_string().as_str(), None, 32, 1.0);
+
+        draw_text(
+            value.to_string().as_str(),
+            bounds.x + bounds.w - text_size.width - 24.0,
+            bounds.y + 24.0,
+            32.0,
+            BLACK,
+        );
+
+        // Buttons
+        if self.button(
+            Rect::new(bounds.x + bounds.w - 22.0, bounds.y, 22.0, bounds.h / 2.0),
+            "",
+        ) {
             value += 1;
         }
 
-        if self.button(Rect::new(x, y + 16.0, 22.0, 16.0), "") {
+        if self.button(
+            Rect::new(
+                bounds.x + bounds.w - 22.0,
+                bounds.y + 16.0,
+                22.0,
+                bounds.h / 2.0,
+            ),
+            "",
+        ) {
             value -= 1;
         }
 
-        value
+        // Scrollilng
+        if bounds.contains(Vec2::from(mouse_position())) {
+            value += mouse_wheel().1 as i32;
+        }
+
+        clamp(value, min, max)
     }
 
     pub async fn new(theme_name: &str) -> GUI {
