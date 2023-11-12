@@ -233,6 +233,17 @@ impl Game {
             self.do_timer = false;
             self.status_face = StatusFace::Cool;
             play_sound_once(&self.assets.sounds.win)
+        } else if !(self.game_won || self.game_over) {
+            // Fix face
+            self.status_face = StatusFace::Happy;
+
+            // Poke!
+            if Rect::new(screen_width() / 2.0 - 126.0, 12.0, 96.0, 96.0)
+                .contains(Vec2::from(mouse_position()))
+                && is_mouse_button_down(MouseButton::Left)
+            {
+                self.status_face = StatusFace::Surprised;
+            }
         }
 
         // Main logic
@@ -267,7 +278,7 @@ impl Game {
             );
 
             // Mouse actions
-            if is_mouse_button_down(MouseButton::Left) {
+            if is_mouse_button_down(MouseButton::Left) && self.do_timer {
                 self.status_face = StatusFace::Surprised;
             } else {
                 self.status_face = StatusFace::Happy;
