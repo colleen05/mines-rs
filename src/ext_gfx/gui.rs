@@ -133,6 +133,20 @@ impl GUI {
             value -= 1;
         }
 
+        draw_texture(
+            &self.textures.arrow_up,
+            bounds.x + bounds.w - 22.0,
+            bounds.y,
+            color_u8!(0x45, 0x45, 0x45, 0xff),
+        );
+
+        draw_texture(
+            &self.textures.arrow_down,
+            bounds.x + bounds.w - 22.0,
+            bounds.y + 16.0,
+            color_u8!(0x45, 0x45, 0x45, 0xff),
+        );
+
         // Scrollilng
         if bounds.contains(Vec2::from(mouse_position())) {
             value += mouse_wheel().1 as i32;
