@@ -114,7 +114,7 @@ impl Game {
         self.draw_7seg(
             Vec2 { x: 64.0, y: 36.0 },
             3,
-            self.field_mines - self.placed_flags,
+            clamp(self.field_mines - self.placed_flags, 0, 9999),
         );
 
         // Timer
