@@ -462,7 +462,7 @@ async fn main() {
 fn window_conf() -> Conf {
     Conf {
         window_title: String::from("Mines!"),
-        icon: Some(Icon::miniquad_logo()),
+        icon: None,
         ..Default::default()
     }
 }
