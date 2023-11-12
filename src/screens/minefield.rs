@@ -1,7 +1,7 @@
 use crate::*;
 
 impl Game {
-    fn draw_bg(&mut self) {
+    pub fn draw_bg(&mut self) {
         draw_rectangle(
             // Solid BG - Top
             0.0,

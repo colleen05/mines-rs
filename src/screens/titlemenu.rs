@@ -17,6 +17,29 @@ impl Game {
         // Draw background
         draw_texture(&self.assets.textures.menu_background, 0.0, 0.0, WHITE);
 
+        // Themes button
+        if self.gui.button(
+            Rect {
+                x: 256.0,
+                y: 16.0,
+                w: 288.0,
+                h: 32.0,
+            },
+            "Themes  ",
+        ) {
+            self.state = GameState::InThemes;
+        }
+
+        draw_texture(&self.assets.textures.new, 432.0, 24.0, WHITE);
+
+        // Quit
+        if self
+            .gui
+            .button(Rect::new(328.0, 464.0, 144.0, 32.0), "Quit")
+        {
+            self.should_quit = true;
+        }
+
         // Preset buttons
         const PRESETS: [(&str, i32, i32, i32); 3] = [
             ("BEGINNER", 10, 10, 10),  // Beginner   (10x10 | 10 mines)
@@ -54,6 +77,16 @@ impl Game {
         self.field_mines = self
             .gui
             .spinner(636.0, 332.0, self.field_mines, 1, maxmines);
+
+        draw_text("W", 516.0, 308.0, 32.0, color_u8!(0x00, 0x00, 0x00, 0x7f));
+        draw_text("H", 616.0, 308.0, 32.0, color_u8!(0x00, 0x00, 0x00, 0x7f));
+        draw_text(
+            "Mines",
+            560.0,
+            356.0,
+            32.0,
+            color_u8!(0x00, 0x00, 0x00, 0x7f),
+        );
 
         if self.gui.button(
             Rect {

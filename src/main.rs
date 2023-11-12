@@ -13,6 +13,7 @@ struct GameTextures {
     top_cells: Texture2D,
     status_bar: Texture2D,
     minefield_background: Option<Texture2D>,
+    new: Texture2D,
 }
 
 struct GameSounds {
@@ -29,6 +30,7 @@ struct GameAssets {
 enum GameState {
     InMenu,
     InRound,
+    InThemes,
 }
 
 #[derive(Clone)]
@@ -257,6 +259,7 @@ impl Game {
             match self.state {
                 GameState::InMenu => self.do_titlemenu(),
                 GameState::InRound => self.do_minefield(),
+                GameState::InThemes => self.do_theme_picker(),
             }
 
             if is_key_pressed(KeyCode::Q) {
@@ -390,6 +393,7 @@ impl Game {
                 .await
                 .unwrap(),
             minefield_background,
+            new: self.assets.textures.new.clone(),
         };
 
         let sounds = GameSounds {
@@ -426,6 +430,7 @@ impl Game {
                     .await
                     .unwrap(),
                 minefield_background: None,
+                new: load_texture("./resources/new.png").await.unwrap(),
             },
             sounds: GameSounds {
                 explode: load_sound("./resources/themes/classic/sounds/explode.ogg")
