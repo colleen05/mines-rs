@@ -325,8 +325,8 @@ impl Game {
 
     fn gen_field(&mut self, width: i32, height: i32, mines: i32) {
         set_window_size(
-            cmp::max((width * 32) as u32, 800),
-            cmp::max((height * 32 + 120) as u32, 600),
+            cmp::max((width * 32) as u32, 640),
+            cmp::max((height * 32 + 120) as u32, 440),
         );
 
         // Set some game states
@@ -346,8 +346,8 @@ impl Game {
         let mut placed_mines = 0;
 
         while placed_mines != mines {
-            let rx = gen_range(0, self.field_width - 1);
-            let ry = gen_range(0, self.field_height - 1);
+            let rx = gen_range(0, self.field_width);
+            let ry = gen_range(0, self.field_height);
             let i = ((ry * self.field_width) + rx) as usize;
 
             if !matches!(self.field[i], FieldCell::Mine) {
@@ -450,7 +450,6 @@ impl Game {
         };
 
         game.load_theme("classic").await;
-        game.gen_field(25, 15, 50);
 
         game
     }
