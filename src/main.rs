@@ -12,6 +12,7 @@ struct GameTextures {
     field_cells: Texture2D,
     top_cells: Texture2D,
     status_bar: Texture2D,
+    minefield_background: Option<Texture2D>,
 }
 
 struct GameSounds {
@@ -369,6 +370,12 @@ impl Game {
     async fn load_theme(&mut self, name: &str) {
         let resource_path = format!("./resources/themes/{name}");
 
+        let minefield_background =
+            match load_texture(format!("{resource_path}/textures/background.png").as_str()).await {
+                Ok(a) => Some(a),
+                Err(_) => None,
+            };
+
         let textures = GameTextures {
             menu_background: load_texture(format!("{resource_path}/textures/splash.png").as_str())
                 .await
@@ -382,6 +389,7 @@ impl Game {
             status_bar: load_texture(format!("{resource_path}/textures/statusbar.png").as_str())
                 .await
                 .unwrap(),
+            minefield_background,
         };
 
         let sounds = GameSounds {
@@ -417,6 +425,7 @@ impl Game {
                 status_bar: load_texture("./resources/themes/classic/textures/statusbar.png")
                     .await
                     .unwrap(),
+                minefield_background: None,
             },
             sounds: GameSounds {
                 explode: load_sound("./resources/themes/classic/sounds/explode.ogg")

@@ -55,6 +55,11 @@ impl Game {
             2.0,
             color_u8!(0x8a, 0x8a, 0x8a, 0xff),
         );
+
+        match &self.assets.textures.minefield_background {
+            Some(tex) => draw_texture(tex, 0.0, 120.0, WHITE),
+            None => {}
+        }
     }
 
     fn draw_7seg(&self, position: Vec2, segments: usize, num: i32) {
