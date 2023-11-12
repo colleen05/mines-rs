@@ -1,5 +1,6 @@
 use ext_gfx::drawing::*;
 use ext_gfx::gui::*;
+use macroquad::miniquad::conf::Icon;
 use macroquad::{audio::*, miniquad::window::*, prelude::*, rand::*};
 use std::cmp;
 
@@ -19,7 +20,6 @@ struct GameSounds {
 }
 
 struct GameAssets {
-    icon: Image,
     theme_name: String,
     textures: GameTextures,
     sounds: GameSounds,
@@ -403,7 +403,6 @@ impl Game {
         set_window_size(width, height);
 
         let assets = GameAssets {
-            icon: load_image("./resources/icon.png").await.unwrap(),
             theme_name: String::from("classic"),
             textures: GameTextures {
                 menu_background: load_texture("./resources/themes/classic/textures/splash.png")
@@ -455,7 +454,15 @@ impl Game {
     }
 }
 
-#[macroquad::main("Mines!")]
+#[macroquad::main(window_conf)]
 async fn main() {
     Game::new(800, 600).await.start().await
+}
+
+fn window_conf() -> Conf {
+    Conf {
+        window_title: String::from("Mines!"),
+        icon: Some(Icon::miniquad_logo()),
+        ..Default::default()
+    }
 }
