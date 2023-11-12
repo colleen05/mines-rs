@@ -143,6 +143,7 @@ impl Game {
             "MENU",
         ) {
             self.state = GameState::InMenu;
+            set_window_size(800, 600);
         }
 
         if self.gui.button(
@@ -291,6 +292,12 @@ impl Game {
 
             // When a player clicks to reveal a mine...
             if is_mouse_button_pressed(MouseButton::Left) {
+                // Start timer if it hasn't started.
+                if !self.do_timer {
+                    self.round_start = get_time() as i32;
+                    self.do_timer = true;
+                }
+
                 // If there is a flag, remove it rather than revealing the cell below.
                 if matches!(self.cover[selection_pos], CoverCell::Flag) {
                     self.cover[selection_pos] = CoverCell::Blank;
@@ -302,12 +309,6 @@ impl Game {
                         && (self.clicked_cells == 0)
                     {
                         self.gen_field(self.field_width, self.field_height, self.field_mines);
-                    }
-
-                    // Start timer if it hasn't started.
-                    if !self.do_timer {
-                        self.round_start = get_time() as i32;
-                        self.do_timer = true;
                     }
 
                     self.clicked_cells += 1;
@@ -348,12 +349,6 @@ impl Game {
                     }
                 }
             } else if is_mouse_button_pressed(MouseButton::Right) {
-                // Start timer if it hasn't started.
-                if !self.do_timer {
-                    self.round_start = get_time() as i32;
-                    self.do_timer = true;
-                }
-
                 // Place or remove flag.
                 self.cover[selection_pos] = match self.cover[selection_pos] {
                     CoverCell::Blank => CoverCell::Flag,
