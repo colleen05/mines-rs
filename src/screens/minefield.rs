@@ -33,16 +33,16 @@ impl Game {
             // Solid BG - Bottom
             0.0,
             120.0,
-            800.0,
-            480.0,
+            screen_width(),
+            screen_height() - 120.0,
             color_u8!(0xaa, 0xaa, 0xaa, 0xff),
         );
         draw_rectangle_lines(
             // Border - Bottom, Outside
             0.0,
             120.0,
-            800.0,
-            480.0,
+            screen_width(),
+            screen_height() - 120.0,
             2.0,
             color_u8!(0x75, 0x75, 0x75, 0xff),
         );
@@ -50,8 +50,8 @@ impl Game {
             // Border - Bottom, Inside
             1.0,
             121.0,
-            798.0,
-            478.0,
+            screen_width() - 2.0,
+            screen_height() - 122.0,
             2.0,
             color_u8!(0x8a, 0x8a, 0x8a, 0xff),
         );
@@ -282,7 +282,7 @@ impl Game {
                 // Otherwise, if the cell has never been clicked before...
                 else if matches!(self.cover[selection_pos], CoverCell::Blank) {
                     // Generate new fields until the place they clicked contains no mines.
-                    while !matches!(self.field[selection_pos], FieldCell::Empty)
+                    while matches!(self.field[selection_pos], FieldCell::Mine)
                         && (self.clicked_cells == 0)
                     {
                         self.gen_field(self.field_width, self.field_height, self.field_mines);
@@ -332,8 +332,13 @@ impl Game {
                     }
                 }
             } else if is_mouse_button_pressed(MouseButton::Right) {
-                self.do_timer = true;
+                // Start timer if it hasn't started.
+                if !self.do_timer {
+                    self.round_start = get_time() as i32;
+                    self.do_timer = true;
+                }
 
+                // Place or remove flag.
                 self.cover[selection_pos] = match self.cover[selection_pos] {
                     CoverCell::Blank => CoverCell::Flag,
                     CoverCell::Flag => CoverCell::Blank,
