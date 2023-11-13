@@ -1,6 +1,5 @@
 use ext_gfx::drawing::*;
 use ext_gfx::gui::*;
-use macroquad::miniquad::conf::Icon;
 use macroquad::{audio::*, miniquad::window::*, prelude::*, rand::*};
 use std::cmp;
 
@@ -72,6 +71,7 @@ enum CoverCell {
     Flag,
     CurrentMine,
     WrongFlag,
+    CorrectFlag,
 }
 
 enum StatusFace {

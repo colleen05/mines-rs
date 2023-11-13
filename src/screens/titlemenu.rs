@@ -69,7 +69,7 @@ impl Game {
         }
 
         // Custom selection
-        self.field_width = self.gui.spinner(536.0, 284.0, self.field_width, 5, 50);
+        self.field_width = self.gui.spinner(536.0, 284.0, self.field_width, 5, 55);
         self.field_height = self.gui.spinner(636.0, 284.0, self.field_height, 5, 25);
 
         let maxmines = clamp(self.field_width * self.field_height - 1, 1, 999);

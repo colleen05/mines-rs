@@ -324,7 +324,10 @@ impl Game {
                             for i in 0..(self.field_width * self.field_height) as usize {
                                 // Reveal each mine
                                 if matches!(self.field[i], FieldCell::Mine) {
-                                    self.cover[i] = CoverCell::None;
+                                    self.cover[i] = match self.cover[i] {
+                                        CoverCell::Flag => CoverCell::CorrectFlag,
+                                        _ => CoverCell::None,
+                                    };
                                 }
 
                                 // Handle flag placements
